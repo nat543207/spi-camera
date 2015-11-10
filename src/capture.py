@@ -6,17 +6,41 @@ import cv2
 
 camera = cv2.VideoCapture()
 file_props = { "filename" : "out.vid",
-                 "fourcc" : int(camera.get(cv.CV_CAP_PROP_FOURCC)),
-                    "fps" : int(camera.get(cv.CV_CAP_PROP_FPS)),
-                   "size" : (int(camera.get(cv.CV_CAP_PROP_FRAME_WIDTH)), int(camera.get(cv.CV_CAP_PROP_FRAME_HEIGHT))), }
+                 "fourcc" : "XVID",
+                    "fps" : 60,
+                   "size" : (640, 480), }
 
+
+
+# Capture a single image from the default camera, display it,
+# and write it to a file.
+#
+# Currently, the 'write to a file' bit doesn't work
 def take_picture():
     camera.open(0)
-    output = cv2.VideoWriter(file_props["filename"], file_props["fourcc"], file_props["fps"], file_props["size"])
+    
+    # This thing doesn't work yet
+    output = cv2.VideoWriter(file_props["filename"], cv.CV_FOURCC('D','I','V','X'), file_props["fps"], file_props["size"], True)
+    #
+
     tmp, frame = camera.read()
     cv2.imshow("test", frame)
+    
+    # Also broken
+    output.write(frame)
+    #
+
     cv2.waitKey(0)
-#    output.write(frame)
+    camera.release()
+
+
+
+# Capture a video and write it to a file.
+# Probably need to get take_photo working first
+def record_video(duration):
+    pass
+
+
 
 if __name__ == "__main__":
     take_picture()
