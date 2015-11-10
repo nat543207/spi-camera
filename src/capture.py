@@ -5,42 +5,47 @@ import cv
 import cv2
 
 camera = cv2.VideoCapture()
-file_props = { "filename" : "out.vid",
-                 "fourcc" : "XVID",
-                    "fps" : 60,
-                   "size" : (640, 480), }
+file = {  "name" : "out.avi", # If this doesn't end in .avi, errors happen
+        "fourcc" : cv.CV_FOURCC(*"XVID"),
+           "fps" : 60,
+          "size" : (640, 480), 
+         "color" : True, }
 
 
 
 # Capture a single image from the default camera, display it,
 # and write it to a file.
-#
-# Currently, the 'write to a file' bit doesn't work
 def take_picture():
     camera.open(0)
-    
-    # This thing doesn't work yet
-    output = cv2.VideoWriter(file_props["filename"], cv.CV_FOURCC('D','I','V','X'), file_props["fps"], file_props["size"], True)
-    #
+    if not camera.isOpened():
+        print "Error opening camera"
 
     tmp, frame = camera.read()
-    cv2.imshow("test", frame)
-    
-    # Also broken
-    output.write(frame)
-    #
 
-    cv2.waitKey(0)
+    cv2.imshow("test", frame)
+    cv2.imwrite("pic.jpg", frame)
+    cv2.waitKey(1000)
     camera.release()
 
 
-
 # Capture a video and write it to a file.
-# Probably need to get take_photo working first
+#
+# Currently, the file can be written but seems to lack contents
 def record_video(duration):
-    pass
+    camera.open(0)
+    output = cv2.VideoWriter(file["name"], file["fourcc"], file["fps"], file["size"], file["color"])
+    
+    for i in range(0,50):
+        tmp, frame = camera.read()
+        cv2.imshow("test", frame)
+        output.write(frame)
+        cv2.waitKey(1)
+
+    camera.release()
+    output.release()
 
 
 
 if __name__ == "__main__":
     take_picture()
+    record_video(5)
