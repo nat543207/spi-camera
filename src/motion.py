@@ -15,7 +15,6 @@ def IR_detects_motion():
     pass
 
 
-motion_detector = cv2.BackgroundSubtractorMOG()
 # Determine if there is motion in the frames using a computer vision algorithm
 def CV_detects_motion(frame):
     # Accept some arguments, probably background and captured image
@@ -25,19 +24,29 @@ def CV_detects_motion(frame):
     #Thanks to the user 'ravwojdyla' on StackOverflow for this Python
     #alternative to static funciton variables
     #http://stackoverflow.com/questions/279561
-    
-    #  Implement
-    
-    motion = motion_detector.apply(frame)
+
+    try:
+        CV_detects_motion.background_reset_counter += 1
+    except AttributeError:
+        CV_detects_motion.background_reset_counter = 1
+
+
+    motion = CV_detects_motion.motion_detector.apply(frame)
     contours, h = cv2.findContours(motion, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cv2.imshow("Motion", motion)
     cv2.waitKey(1)
+
+    #Occasionally reset background model to account for noise
+    if 90 < CV_detects_motion.background_reset_counter:
+        CV_detects_motion.motion_detector = cv2.BackgroundSubtractorMOG()
+        CV_detects_motion.background_reset_counter = 1
 
     threshold = 25
     for c in contours:
         if threshold**2 < cv2.contourArea(c):
             return True;
     return False
+CV_detects_motion.motion_detector = cv2.BackgroundSubtractorMOG()
 
 if __name__ == "__main__":
     camera = cv2.VideoCapture(0)
