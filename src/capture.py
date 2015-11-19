@@ -3,7 +3,7 @@
 """
 import cv2
 from Queue import Queue
-from datetime import datetime, timedelta
+from datetime import datetime
 import motion
 
 
@@ -19,12 +19,12 @@ def capture_from(camera):
     return Frame(datetime.now(), img, motion.CV_detects_motion(img))
 
 
-def record_on_motion(filename, fourcc=cv2.cv.CV_FOURCC(*"XVID"), fps=30, size=(640,480), color=True):
+def record_on_motion(savedir='.', fourcc=cv2.cv.CV_FOURCC(*"XVID"), fps=30, size=(640,480), color=True):
     vidbuf = Queue()
     camera = cv2.VideoCapture()
+    output = cv2.VideoWriter()
     bufsize = 60
     camera.open(0)
-    output = cv2.VideoWriter(filename, fourcc, fps, size, color)
     recording = False
 
     for i in range(0, bufsize):
@@ -34,6 +34,9 @@ def record_on_motion(filename, fourcc=cv2.cv.CV_FOURCC(*"XVID"), fps=30, size=(6
         frame = capture_from(camera)
         if frame.has_motion:
             recording = True
+            if not output.isOpened():
+                filename = savedir + '/' + str(datetime.now()) + ".avi"
+                output.open(filename, fourcc, fps, size, color)
             while 0 < vidbuf.qsize():
                 output.write(vidbuf.get().image)
             output.write(frame.image)
