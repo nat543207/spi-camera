@@ -16,7 +16,7 @@ class Frame:
 
 def capture_from(camera):
     success, img = camera.read()
-    has_motion = motion.IR_detects_motion() || motion.CV_detects_motion(img)
+    has_motion = motion.IR_detects_motion() or  motion.CV_detects_motion(img)
     return Frame(datetime.now(), img, has_motion)
 
 
