@@ -16,15 +16,15 @@ class Frame:
 
 def capture_from(camera):
     success, img = camera.read()
-    return Frame(datetime.now(), img, motion.CV_detects_motion(img))
+    return Frame(datetime.now(), img, motion.IR_detects_motion())
 
+
+camera = cv2.VideoCapture(0)
 
 def record_on_motion(savedir='.', fourcc=cv2.cv.CV_FOURCC(*"XVID"), fps=30, size=(640,480), color=True):
     vidbuf = Queue()
-    camera = cv2.VideoCapture()
     output = cv2.VideoWriter()
     bufsize = 60
-    camera.open(0)
     recording = False
 
     for i in range(0, bufsize):

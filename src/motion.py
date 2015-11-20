@@ -44,22 +44,20 @@ CV_detects_motion.motion_detector = cv2.BackgroundSubtractorMOG()
 
 try:
     import RPi.GPIO as gpio
-   
-
-    io_pin = 3
+    
+    
+    io_pin = 7
     gpio.setmode(gpio.BOARD)
     gpio.setup(io_pin, gpio.IN, pull_up_down=gpio.PUD_DOWN)
     
     # Determine if the IR sensor on the Pi is detecting motion
     def IR_detects_motion():
-        # Read from GPIO pin(s) to determine if IR sensor is triggered
-        # Return result
         if gpio.input(io_pin):
             #print "Motion detected by IR!"
             print IR_detects_motion.testvar
             IR_detects_motion.testvar += 1
-            #return bool(gpio.input(io_pin))
             return True
+            #return bool(gpio.input(io_pin))
     IR_detects_motion.testvar = 0
 except ImportError:
     print "This machine is not a Raspberry Pi, disabling GPIO support..."

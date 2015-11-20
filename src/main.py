@@ -14,8 +14,6 @@ def main():
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-#    GPIO.setmode(GPIO.BOARD)
-#    GPIO.setup(3, GPIO.IN)
     while True:
         capture.record_on_motion(output_dir)
 
